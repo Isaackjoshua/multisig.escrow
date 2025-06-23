@@ -70,3 +70,16 @@ def approve_escrow(escrow_id: int, approver_id: int, db: Session = Depends(get_d
 @app.get("/escrows/{escrow_id}/approvals", response_model=list[schemas.Approval])
 def get_approvals(escrow_id: int, db: Session = Depends(get_db)):
     return crud.get_approvals_for_escrow(db, escrow_id)
+
+@app.post("/payment/callback")
+def payment_callback(data: dict):
+    print("Received callback:", data)
+    # Simulate confirming payment
+    return {"status": "received"}
+
+from app.utils.payment import initiate_stk_push
+
+@app.post("/pay/test")
+def pay_test(phone_number: str = "254708374149", amount: int = 10):
+    res = initiate_stk_push(phone_number, amount)
+    return res
