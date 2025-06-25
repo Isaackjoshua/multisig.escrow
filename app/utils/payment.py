@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+print("🧪 Consumer Key:", os.getenv("MPESA_CONSUMER_KEY"))
+print("🧪 Consumer Secret:", os.getenv("MPESA_CONSUMER_SECRET"))
+
 
 def get_access_token():
     consumer_key = os.getenv("MPESA_CONSUMER_KEY")
@@ -14,6 +17,8 @@ def get_access_token():
     auth_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 
     response = httpx.get(auth_url, auth=(consumer_key, consumer_secret))
+
+    print("DEBUG access token response:", response.text)
 
     if response.status_code != 200:
         print("Access token error:", response.text)
@@ -24,6 +29,9 @@ def get_access_token():
 
 def initiate_stk_push(phone_number: str, amount: int):
     token = get_access_token()
+
+    print("🟡 Access token used for STK push:", token)
+
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     shortcode = os.getenv("MPESA_SHORTCODE")
     passkey = os.getenv("MPESA_PASSKEY")
@@ -34,7 +42,9 @@ def initiate_stk_push(phone_number: str, amount: int):
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
+    
     }
+    print("🔐 Authorization Header:", headers)
 
     payload = {
         "BusinessShortCode": shortcode,
@@ -53,3 +63,4 @@ def initiate_stk_push(phone_number: str, amount: int):
     url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
     response = httpx.post(url, headers=headers, json=payload)
     return response.json()
+
