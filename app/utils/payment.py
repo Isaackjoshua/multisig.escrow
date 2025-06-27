@@ -10,6 +10,7 @@ print("🧪 Consumer Key:", os.getenv("MPESA_CONSUMER_KEY"))
 print("🧪 Consumer Secret:", os.getenv("MPESA_CONSUMER_SECRET"))
 
 
+
 def get_access_token():
     consumer_key = os.getenv("MPESA_CONSUMER_KEY")
     consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
@@ -40,10 +41,11 @@ def initiate_stk_push(phone_number: str, amount: int):
     password = base64.b64encode(f"{shortcode}{passkey}{timestamp}".encode()).decode()
 
     headers = {
-        "Authorization": f"Bearer {token}",
+        "Authorization": f"Bearer {token}",#tweak to basic
         "Content-Type": "application/json"
-    
+  
     }
+
     print("🔐 Authorization Header:", headers)
 
     payload = {
@@ -63,4 +65,6 @@ def initiate_stk_push(phone_number: str, amount: int):
     url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
     response = httpx.post(url, headers=headers, json=payload)
     return response.json()
+#initiate_stk_push('0761638781', 10)
 
+print(get_access_token())
